@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control y Valoración - Red Hospital General de Salud</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #091135 0%, #1e003d 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            padding: 40px;
+            min-height: 700px;
+            display: none;
+            animation: slideIn 0.5s ease-in-out;
+            overflow-y: auto;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slide h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 20px;
+        }
+        
+        .slide h2 {
+            color: #34495e;
+            font-size: 2em;
+            margin: 30px 0 20px 0;
+            border-left: 5px solid #e74c3c;
+            padding-left: 20px;
+        }
+        
+        .slide h3 {
+            color: #2980b9;
+            font-size: 1.4em;
+            margin: 20px 0 15px 0;
+        }
+        
+        .service-card, .attack-card, .tool-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        
+        .service-card:hover, .attack-card:hover, .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .attack-card {
+            border-left-color: #e74c3c;
+        }
+        
+        .tool-card {
+            border-left-color: #27ae60;
+        }
+        
+        .card-image {
+            width: 120px;
+            height: 80px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+        
+        .card-content {
+            flex: 1;
+        }
+        
+        .hero-image {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .navigation {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin: 20px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .slide-counter {
+            color: white;
+            font-size: 18px;
+            margin: 0 20px;
+        }
+        
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .timeline {
+            border-left: 3px solid #3498db;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+        
+        .timeline-item {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -38px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: #3498db;
+            border-radius: 50%;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+            align-items: start;
+        }
+        
+        .status-good {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .status-warning {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        
+        .status-critical {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .header-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .hospital-icon {
+            font-size: 3em;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .gallery-item {
+            text-align: center;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .threat-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .threat-image {
+            width: 200px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+        
+        .maintenance-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-card, .attack-card, .tool-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .card-image {
+                width: 100%;
+                height: 150px;
+            }
+        }
+
+        .conclusionH2 {
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Slide 1: Portada -->
+        <div class="slide active">
+            <div class="header-logo">
+                <div class="hospital-icon">🏥</div>
+                <h1>Informe de Control y Valoración</h1>
+                <h2 style="text-align: center; border: none; margin-top: 20px;">Proyecto de Red Hospital General de Salud</h2>
+            </div>
+            
+            <div style="text-align: center; margin: 40px 0;">
+                <h3>Universidad Nacional Abierta y a Distancia - UNAD</h3>
+                <h3>Curso: Redes y Comunicaciones</h3>
+                <h3>Código: 202016898</h3>
+                <h3>Nombre: Luis Miguel Rojas Franco</h3>
+                <p style="margin-top: 30px; font-size: 1.2em; color: #7f8c8d;">
+                    Diseño e implementación de infraestructura de red hospitalaria<br>
+                    con tecnologías IPv4/IPv6, servicios convergentes y medidas de seguridad
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Servicios Convergentes -->
+        <div class="slide">
+            <h1>Servicios Basados en Redes Convergentes</h1>
+            
+            <div class="service-card">
+                <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Historia Clínica Electrónica" class="card-image">
+                <div class="card-content">
+                    <h3>🌐 1. Servicio de Historia Clínica Electrónica (HCE)</h3>
+                    <p><strong>Características:</strong> Sistema web centralizado para gestión de historias clínicas con acceso desde múltiples subredes.</p>
+                    <p><strong>Funcionalidades:</strong> Almacenamiento seguro de datos médicos, acceso desde consultas, laboratorio y urgencias. Implementado en servidor web 192.168.4.22 (IPv4) y 2001:DB8:CAFE:0010::20 (IPv6).</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <img src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Sistema de correo electrónico" class="card-image">
+                <div class="card-content">
+                    <h3>📧 2. Servicio de Correo Electrónico Institucional</h3>
+                    <p><strong>Características:</strong> Sistema de comunicación unificado para personal médico y administrativo con dominio @hospital.com.</p>
+                    <p><strong>Funcionalidades:</strong> Comunicación interdepartamental, notificaciones médicas, coordinación de turnos. Servidor en 192.168.4.21 (IPv4) y 2001:DB8:CAFE:0010::21 (IPv6).</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <img src="https://blog.novus.com.br/wp-content/uploads/2025/04/data-centers_climate-air_imagem_blog_01.jpg" alt="Sistema IoT hospitalario" class="card-image">
+                <div class="card-content">
+                    <h3>🌡️ 3. Sistema IoT de Monitoreo Ambiental</h3>
+                    <p><strong>Características:</strong> Red de sensores para control de temperatura, humedad y calidad del aire en áreas críticas.</p>
+                    <p><strong>Funcionalidades:</strong> Monitoreo continuo en urgencias, alertas automáticas, control de climatización. Integrado en subred de administración.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Más Servicios Convergentes -->
+        <div class="slide">
+            <h1>Servicios Convergentes (Continuación)</h1>
+            
+            <div class="service-card">
+                <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Telemedicina" class="card-image">
+                <div class="card-content">
+                    <h3>🔗 4. Servicio de Telemedicina</h3>
+                    <p><strong>Características:</strong> Plataforma de consultas remotas con videoconferencia, intercambio de estudios médicos y segunda opinión.</p>
+                    <p><strong>Funcionalidades:</strong> Conectividad con sede capital vía WAN, consultas remotas, transmisión de imágenes médicas. Red dedicada 192.168.3.0/24 y 2001:DB8:CAFE:0030::/64.</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <img src="https://images.unsplash.com/photo-1559757175-0eb30cd8c063?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Red WiFi hospitalaria" class="card-image">
+                <div class="card-content">
+                    <h3>📱 5. Red Inalámbrica para Personal Médico</h3>
+                    <p><strong>Características:</strong> Infraestructura WiFi segura para dispositivos móviles del personal médico con acceso controlado.</p>
+                    <p><strong>Funcionalidades:</strong> Movilidad del personal, acceso a HCE desde dispositivos móviles, comunicación instantánea. DHCP automático y segmentación VLAN.</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px; padding: 20px; background: #e8f5e8; border-radius: 10px;">
+                <h3>🔧 Implementación en la Red</h3>
+                <div class="grid-2">
+                    <div>
+                        <p>Todos los servicios están integrados mediante:</p>
+                        <ul>
+                            <li>Enrutamiento OSPF para conectividad total</li>
+                            <li>Segmentación por VLANs para seguridad</li>
+                            <li>Servidores DNS para resolución de nombres</li>
+                            <li>Firewalls para protección perimetral</li>
+                        </ul>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Infraestructura de red" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Ataques Informáticos -->
+        <div class="slide">
+            <h1>Análisis de Amenazas de Seguridad</h1>
+            
+            <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ciberseguridad hospitalaria" class="hero-image">
+            
+            <div class="attack-card">
+                <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Ransomware" class="card-image">
+                <div class="card-content">
+                    <h3>⚠️ 1. Ransomware Hospitalario</h3>
+                    <p><strong>Descripción:</strong> Malware que cifra historias clínicas y sistemas críticos.</p>
+                    <p><strong>Servicios afectados:</strong> HCE, bases de datos médicas, sistemas de laboratorio.</p>
+                    <p><strong>Prevención:</strong> Backups automatizados, segmentación de red, actualizaciones de seguridad, capacitación del personal.</p>
+                </div>
+            </div>
+            
+            <div class="attack-card">
+                <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Ataque DDoS" class="card-image">
+                <div class="card-content">
+                    <h3>🎯 2. Ataques de Denegación de Servicio (DDoS)</h3>
+                    <p><strong>Descripción:</strong> Sobrecarga de tráfico para inutilizar servicios críticos.</p>
+                    <p><strong>Servicios afectados:</strong> Todos los servicios web, telemedicina, comunicaciones.</p>
+                    <p><strong>Prevención:</strong> Firewall con protección DDoS, balanceadores de carga, monitoreo de tráfico, CDN.</p>
+                </div>
+            </div>
+            
+            <div class="attack-card">
+                <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Acceso no autorizado" class="card-image">
+                <div class="card-content">
+                    <h3>🕵️ 3. Acceso No Autorizado a Datos Médicos</h3>
+                    <p><strong>Descripción:</strong> Intrusión para robar información confidencial de pacientes.</p>
+                    <p><strong>Servicios afectados:</strong> HCE, bases de datos, correo electrónico.</p>
+                    <p><strong>Prevención:</strong> Autenticación multifactor, cifrado de datos, control de accesos, auditorías de seguridad.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Más Ataques y Herramientas -->
+        <div class="slide">
+            <h1>Amenazas y Herramientas de Detección</h1>
+            
+            <div class="grid-2">
+                <div>
+                    <div class="attack-card" style="margin-bottom: 15px;">
+                        <div class="card-content">
+                            <h3>📡 4. Interceptación WiFi</h3>
+                            <p><strong>Servicios afectados:</strong> Red WiFi, comunicaciones móviles</p>
+                            <p><strong>Prevención:</strong> WPA3, VPN, certificados digitales</p>
+                        </div>
+                    </div>
+                    
+                    <div class="attack-card">
+                        <div class="card-content">
+                            <h3>🦠 5. Malware en IoT</h3>
+                            <p><strong>Servicios afectados:</strong> Sistema IoT, control ambiental</p>
+                            <p><strong>Prevención:</strong> Segmentación IoT, actualizaciones firmware</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <img src="https://images.unsplash.com/photo-1563206767-5b18f218e8de?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Monitoreo de seguridad" style="width: 100%; height: 300px; object-fit: cover; border-radius: 10px;">
+            </div>
+            
+            <h2>Herramientas de Detección de Vulnerabilidades</h2>
+            
+            <div class="grid">
+                <div class="tool-card">
+                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Nmap" class="card-image">
+                    <div class="card-content">
+                        <h3>🔍 1. Nmap (Network Mapper)</h3>
+                        <p><strong>Uso:</strong> Escaneo de puertos, detección de servicios, mapeo de red. Implementado para auditorías regulares de seguridad.</p>
+                    </div>
+                </div>
+                
+                <div class="tool-card">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="PRTG" class="card-image">
+                    <div class="card-content">
+                        <h3>📊 2. PRTG Network Monitor</h3>
+                        <p><strong>Uso:</strong> Monitoreo continuo de infraestructura, detección de anomalías, alertas en tiempo real.</p>
+                    </div>
+                </div>
+                
+                <div class="tool-card">
+                    <img src="https://www.optimizar.net/wp-content/uploads/2020/06/logo-openvas.png" alt="OpenVAS" class="card-image">
+                    <div class="card-content">
+                        <h3>🛡️ 3. OpenVAS</h3>
+                        <p><strong>Uso:</strong> Scanner de vulnerabilidades completo, evaluación de seguridad automatizada, reportes detallados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Telemedicina -->
+        <div class="slide">
+            <h1>Características de Telemedicina</h1>
+            
+            <div class="grid-2">
+                <div>
+                    <h2>Infraestructura Implementada</h2>
+                    
+                    <div class="service-card">
+                        <div class="card-content">
+                            <h3>🌐 Conectividad WAN</h3>
+                            <p><strong>Enlace:</strong> Conexión dedicada entre Hospital Municipal y Sede Capital</p>
+                            <p><strong>Direccionamiento:</strong> IPv4: 192.168.6.0/24 | IPv6: 2001:DB8:CAFE:0002::/64</p>
+                            <p><strong>Protocolo:</strong> OSPF para enrutamiento dinámico</p>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="card-content">
+                            <h3>📹 Servicios de Video Consulta</h3>
+                            <p><strong>Capacidad:</strong> HD 1080p con latencia < 150ms</p>
+                            <p><strong>Ancho de banda:</strong> 10 Mbps garantizados por sesión</p>
+                            <p><strong>Simultaneidad:</strong> Hasta 5 consultas concurrentes</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <img src="https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs2/304253856/original/2af42da2a45483c5a76b14688297fbcb4aa8df62/do-cisco-packet-tracer-labs-on-cisco-packet-tracer.jpg" alt="Consulta de telemedicina" style="width: 100%; height: 400px; object-fit: cover; border-radius: 15px;">
+            </div>
+            
+            <h2>Evaluación Técnica</h2>
+            
+            <div class="grid">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Métricas de rendimiento" class="card-image">
+                    <div class="card-content">
+                        <h3>✅ Cumplimiento Técnico</h3>
+                        <ul>
+                            <li class="status-good">Latencia: 85ms (< 150ms requerido)</li>
+                            <li class="status-good">Disponibilidad: 99.5%</li>
+                            <li class="status-good">Calidad video: 1080p estable</li>
+                            <li class="status-warning">Redundancia: Parcial</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Seguridad" class="card-image">
+                    <div class="card-content">
+                        <h3>🔐 Seguridad</h3>
+                        <ul>
+                            <li class="status-good">Cifrado TLS 1.3</li>
+                            <li class="status-good">VPN site-to-site</li>
+                            <li class="status-good">Autenticación médica</li>
+                            <li class="status-good">Auditoría de sesiones</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Mantenimiento Preventivo -->
+        <div class="slide">
+            <h1>Cronograma de Mantenimiento Preventivo</h1>
+            
+            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Mantenimiento de servidores" class="hero-image">
+            
+            <h2>📅 Programación por Frecuencia</h2>
+            
+            <div class="grid-2">
+                <div class="maintenance-section">
+                    <h3>🗓️ DIARIO</h3>
+                    <ul>
+                        <li>Monitoreo de servicios críticos (HCE, correo, IoT)</li>
+                        <li>Verificación de backups automáticos</li>
+                        <li>Revisión de logs de seguridad</li>
+                        <li>Control de temperatura servidores</li>
+                    </ul>
+                </div>
+                
+                <div class="maintenance-section">
+                    <h3>📅 SEMANAL</h3>
+                    <ul>
+                        <li>Actualización de antivirus y definiciones</li>
+                        <li>Limpieza de archivos temporales</li>
+                        <li>Verificación de conectividad telemedicina</li>
+                        <li>Pruebas de conectividad backup WAN</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="maintenance-section">
+                    <h3>📆 MENSUAL</h3>
+                    <ul>
+                        <li>Actualización de firmware switches/routers</li>
+                        <li>Escaneo de vulnerabilidades con OpenVAS</li>
+                        <li>Pruebas de restauración de backups</li>
+                        <li>Mantenimiento físico UPS y aires acondicionados</li>
+                    </ul>
+                </div>
+                
+                <div class="maintenance-section">
+                    <h3>📊 TRIMESTRAL</h3>
+                    <ul>
+                        <li>Auditoría completa de seguridad de red</li>
+                        <li>Capacitación del personal en ciberseguridad</li>
+                        <li>Revisión y actualización de políticas</li>
+                        <li>Pruebas de penetración (pentesting)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Mantenimiento Preventivo (Continuación) -->
+        <div class="slide">
+            <h1>Cronograma Preventivo (Continuación)</h1>
+            
+            <div class="grid-2">
+                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Planificación de mantenimiento" style="width: 100%; height: 250px; object-fit: cover; border-radius: 15px;">
+                
+                <div class="maintenance-section">
+                    <h3>📋 SEMESTRAL</h3>
+                    <ul>
+                        <li>Renovación de certificados SSL/TLS</li>
+                        <li>Actualización mayor de sistemas operativos</li>
+                        <li>Pruebas de continuidad del negocio (DRP)</li>
+                        <li>Evaluación de capacidad y performance</li>
+                        <li>Mantenimiento preventivo hardware crítico</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="maintenance-section">
+                    <h3>🔄 ANUAL</h3>
+                    <ul>
+                        <li>Renovación de licencias de software</li>
+                        <li>Auditoría externa de cumplimiento normativo</li>
+                        <li>Actualización del plan de contingencia</li>
+                        <li>Evaluación de tecnologías emergentes</li>
+                        <li>Revisión del presupuesto de TI</li>
+                    </ul>
+                </div>
+                
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Análisis de sistemas" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px;">
+            </div>
+        </div>
+
+        <!-- Slide 9: Mantenimiento Correctivo -->
+        <div class="slide">
+            <h1>Procedimientos de Mantenimiento Correctivo</h1>
+            
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Centro de operaciones de red" class="hero-image">
+            
+            <h2>🚨 Clasificación de Incidentes</h2>
+            
+            <div class="grid">
+                <div class="attack-card">
+                    <img src="https://www.servnet.mx/hs-fs/hubfs/Blog/Blog_Articulos/Blog_Art%C3%ADculos/Blog_Art%C3%ADculos_2025/Blog_Art%C3%ADculos_2025_Febrero/Blog_Art%C3%ADculos_2025_Febrero_VULIN/Vulnerabilidad_en_dispositivos_y_sistemas_operativos.png?width=900&height=500&name=Vulnerabilidad_en_dispositivos_y_sistemas_operativos.png" alt="Alerta crítica" class="card-image">
+                    <div class="card-content">
+                        <h3>🔴 CRÍTICO (0-2 horas)</h3>
+                        <ul>
+                            <li>Caída total de HCE</li>
+                            <li>Falla en servicios de urgencias</li>
+                            <li>Compromiso de seguridad</li>
+                            <li>Falla total de conectividad</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Alerta alta" class="card-image">
+                    <div class="card-content">
+                        <h3>🟡 ALTO (2-8 horas)</h3>
+                        <ul>
+                            <li>Falla parcial de servicios</li>
+                            <li>Problemas de rendimiento</li>
+                            <li>Falla de equipos redundantes</li>
+                            <li>Problemas de telemedicina</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="tool-card">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Alerta media" class="card-image">
+                    <div class="card-content">
+                        <h3>🟢 MEDIO (8-24 horas)</h3>
+                        <ul>
+                            <li>Fallas menores de conectividad</li>
+                            <li>Problemas de impresión</li>
+                            <li>Actualizaciones fallidas</li>
+                            <li>Problemas cosméticos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h2>🔧 Procedimiento de Respuesta</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3>1. Detección y Reporte</h3>
+                    <p>Monitoreo automático PRTG + reporte usuario → Sistema de tickets → Clasificación de prioridad</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h3>2. Análisis Inicial</h3>
+                    <p>Diagnóstico remoto → Identificación de causa raíz → Evaluación de impacto → Asignación de recursos</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h3>3. Implementación de Solución</h3>
+                    <p>Solución temporal (si aplica) → Implementación de fix → Pruebas de funcionamiento → Documentación</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Conclusiones -->
+        <div class="slide">
+            <h1>Conclusiones del Proyecto</h1>
+            
+            <div class="grid-2">
+                <div>
+                    <div class="service-card">
+                        <div class="card-content">
+                            <h3>🎯 Objetivos Alcanzados</h3>
+                            <ul>
+                                <li>✅ Implementación exitosa de red dual-stack IPv4/IPv6</li>
+                                <li>✅ Servicios convergentes operativos al 99.5%</li>
+                                <li>✅ Seguridad perimetral implementada</li>
+                                <li>✅ Conectividad de telemedicina funcional</li>
+                                <li>✅ Sistema de monitoreo IoT activo</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attack-card">
+                        <div class="card-content">
+                            <h3>⚠️ Áreas de Mejora Identificadas</h3>
+                            <ul>
+                                <li>Implementar redundancia completa en enlaces WAN</li>
+                                <li>Fortalecer seguridad en dispositivos IoT</li>
+                                <li>Ampliar capacidad de ancho de banda para telemedicina</li>
+                                <li>Implementar sistema de respaldo geográfico</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <img src="https://i.ytimg.com/vi/xTmcAa3t9UQ/sddefault.jpg" alt="Hospital tecnológico exitoso" style="width: 100%; height: 400px; object-fit: cover; border-radius: 15px;">
+            </div>
+            
+            <div class="tool-card">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Métricas de éxito" class="card-image">
+                <div class="card-content">
+                    <h3>📈 Beneficios Cuantificables</h3>
+                    <ul>
+                        <li>📉 Reducción 40% en tiempo de acceso a Historia clínica electrónica</li>
+                        <li>🔒 Cero incidentes de seguridad críticos</li>
+                        <li>📞 15 consultas telemedicina/semana</li>
+                        <li>⚡ Disponibilidad servicios: 99.5%</li>
+                        <li>💰 ROI proyectado: 180% en 3 años</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px;">
+                <h2 class="conclusionH2">🏥 Red Hospitalaria: Preparada para el Futuro</h2>
+                <p style="font-size: 1.2em; margin-top: 15px;">
+                    Infraestructura robusta, segura y escalable que soporta la transformación digital del sector salud
+                </p>
+                
+                <div class="image-gallery" style="margin-top: 20px;">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Tecnología médica" class="gallery-image">
+                        <p style="color: white; font-size: 0.9em;">Tecnología Avanzada</p>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Seguridad" class="gallery-image">
+                        <p style="color: white; font-size: 0.9em;">Máxima Seguridad</p>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Conectividad" class="gallery-image">
+                        <p style="color: white; font-size: 0.9em;">Conectividad Total</p>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Monitoreo" class="gallery-image">
+                        <p style="color: white; font-size: 0.9em;">Monitoreo 24/7</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button onclick="previousSlide()" id="prevBtn">← Anterior</button>
+        <span class="slide-counter" id="slideCounter">1 / 10</span>
+        <button onclick="nextSlide()" id="nextBtn">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            if (n >= totalSlides) currentSlide = 0;
+            if (n < 0) currentSlide = totalSlides - 1;
+            
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // Inicializar
+        showSlide(currentSlide);
+
+        // Navegación con teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) nextSlide();
+            if (e.key === 'ArrowLeft' && currentSlide > 0) previousSlide();
+        });
+
+        // Precargar imágenes para mejor rendimiento
+        function preloadImages() {
+            const images = [
+                'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1596526131083-e8c633c948d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1558618644-fbd4c041cd38?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1563206767-5b18f218e8de?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1555949963-f7fe82c91852?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
+                'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
+            ];
+            
+            images.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        }
+
+        // Precargar imágenes al cargar la página
+        window.addEventListener('load', preloadImages);
+    </script>
+</body>
+</html>
